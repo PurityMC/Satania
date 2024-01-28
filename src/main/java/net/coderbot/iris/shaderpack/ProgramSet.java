@@ -1,5 +1,6 @@
 package net.coderbot.iris.shaderpack;
 
+import lombok.Getter;
 import net.coderbot.iris.Iris;
 import net.coderbot.iris.gl.blending.BlendModeOverride;
 import net.coderbot.iris.shaderpack.include.AbsolutePackPath;
@@ -13,15 +14,15 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class ProgramSet {
-	private final PackDirectives packDirectives;
+	@Getter private final PackDirectives packDirectives;
 
 	private final ProgramSource shadow;
-	private final ComputeSource[] shadowCompute;
+	@Getter private final ComputeSource[] shadowCompute;
 
 	private final ProgramSource[] shadowcomp;
-	private final ComputeSource[][] shadowCompCompute;
+	@Getter private final ComputeSource[][] shadowCompCompute;
 	private final ProgramSource[] prepare;
-	private final ComputeSource[][] prepareCompute;
+	@Getter private final ComputeSource[][] prepareCompute;
 
 	private final ProgramSource gbuffersBasic;
 	private final ProgramSource gbuffersLine;
@@ -42,19 +43,19 @@ public class ProgramSet {
 	private final ProgramSource gbuffersBlock;
 	private final ProgramSource gbuffersHand;
 
-	private final ProgramSource[] deferred;
-	private final ComputeSource[][] deferredCompute;
+	@Getter private final ProgramSource[] deferred;
+	@Getter private final ComputeSource[][] deferredCompute;
 
 	private final ProgramSource gbuffersWater;
 	private final ProgramSource gbuffersHandWater;
 
-	private final ProgramSource[] composite;
-	private final ComputeSource[][] compositeCompute;
+	@Getter private final ProgramSource[] composite;
+	@Getter private final ComputeSource[][] compositeCompute;
 	private final ProgramSource compositeFinal;
-	private final ComputeSource[] finalCompute;
+	@Getter private final ComputeSource[] finalCompute;
 
 
-	private final ShaderPack pack;
+	@Getter private final ShaderPack pack;
 
 	public ProgramSet(AbsolutePackPath directory, Function<AbsolutePackPath, String> sourceProvider,
 					  ShaderProperties shaderProperties, ShaderPack pack) {
@@ -131,7 +132,7 @@ public class ProgramSet {
 			// Presumably this was added before DRAWBUFFERS was a thing? Or just a hardcoded hacky fix for some
 			// shader packs - in any case, Sildurs Vibrant Shaders and other packs rely on it.
 			first(getGbuffersTerrain(), getGbuffersTexturedLit(), getGbuffersTextured(), getGbuffersBasic()).ifPresent(src -> {
-				ProgramDirectives overrideDirectives = src.getDirectives().withOverriddenDrawBuffers(new int[] { 0 });
+                final ProgramDirectives overrideDirectives = src.getDirectives().withOverriddenDrawBuffers(new int[] { 0 });
 				this.gbuffersDamagedBlock = src.withDirectiveOverride(overrideDirectives);
 			});
 		}
@@ -151,10 +152,10 @@ public class ProgramSet {
 	private ProgramSource[] readProgramArray(AbsolutePackPath directory,
 											 Function<AbsolutePackPath, String> sourceProvider, String name,
 											 ShaderProperties shaderProperties) {
-		ProgramSource[] programs = new ProgramSource[99];
+        final ProgramSource[] programs = new ProgramSource[99];
 
 		for (int i = 0; i < programs.length; i++) {
-			String suffix = i == 0 ? "" : Integer.toString(i);
+            final String suffix = i == 0 ? "" : Integer.toString(i);
 
 			programs[i] = readProgramSource(directory, sourceProvider, name + suffix, this, shaderProperties);
 		}
@@ -164,12 +165,12 @@ public class ProgramSet {
 
 	private ComputeSource[] readComputeArray(AbsolutePackPath directory,
 											 Function<AbsolutePackPath, String> sourceProvider, String name) {
-		ComputeSource[] programs = new ComputeSource[27];
+        final ComputeSource[] programs = new ComputeSource[27];
 
 		programs[0] = readComputeSource(directory, sourceProvider, name, this);
 
 		for (char c = 'a'; c <= 'z'; ++c) {
-			String suffix = "_" + c;
+            final String suffix = "_" + c;
 
 			programs[c - 96] = readComputeSource(directory, sourceProvider, name + suffix, this);
 
@@ -182,8 +183,8 @@ public class ProgramSet {
 	}
 
 	private void locateDirectives() {
-		List<ProgramSource> programs = new ArrayList<>();
-		List<ComputeSource> computes = new ArrayList<>();
+        final List<ProgramSource> programs = new ArrayList<>();
+        final List<ComputeSource> computes = new ArrayList<>();
 
 		programs.add(shadow);
 		programs.addAll(Arrays.asList(shadowcomp));
@@ -363,11 +364,7 @@ public class ProgramSet {
         };
 	}
 
-	public ProgramSource[] getDeferred() {
-		return deferred;
-	}
-
-	public Optional<ProgramSource> getGbuffersWater() {
+    public Optional<ProgramSource> getGbuffersWater() {
 		return gbuffersWater.requireValid();
 	}
 
@@ -375,47 +372,11 @@ public class ProgramSet {
 		return gbuffersHandWater.requireValid();
 	}
 
-	public ProgramSource[] getComposite() {
-		return composite;
-	}
-
-	public Optional<ProgramSource> getCompositeFinal() {
+    public Optional<ProgramSource> getCompositeFinal() {
 		return compositeFinal.requireValid();
 	}
 
-	public ComputeSource[] getShadowCompute() {
-		return shadowCompute;
-	}
-
-	public ComputeSource[][] getShadowCompCompute() {
-		return shadowCompCompute;
-	}
-
-	public ComputeSource[][] getPrepareCompute() {
-		return prepareCompute;
-	}
-
-	public ComputeSource[][] getDeferredCompute() {
-		return deferredCompute;
-	}
-
-	public ComputeSource[][] getCompositeCompute() {
-		return compositeCompute;
-	}
-
-	public ComputeSource[] getFinalCompute() {
-		return finalCompute;
-	}
-
-	public PackDirectives getPackDirectives() {
-		return packDirectives;
-	}
-
-	public ShaderPack getPack() {
-		return pack;
-	}
-
-	private static ProgramSource readProgramSource(AbsolutePackPath directory,
+    private static ProgramSource readProgramSource(AbsolutePackPath directory,
 												   Function<AbsolutePackPath, String> sourceProvider, String program,
 												   ProgramSet programSet, ShaderProperties properties) {
 		return readProgramSource(directory, sourceProvider, program, programSet, properties, null);
@@ -425,14 +386,14 @@ public class ProgramSet {
 												   Function<AbsolutePackPath, String> sourceProvider, String program,
 												   ProgramSet programSet, ShaderProperties properties,
 												   BlendModeOverride defaultBlendModeOverride) {
-		AbsolutePackPath vertexPath = directory.resolve(program + ".vsh");
-		String vertexSource = sourceProvider.apply(vertexPath);
+		final AbsolutePackPath vertexPath = directory.resolve(program + ".vsh");
+        final String vertexSource = sourceProvider.apply(vertexPath);
 
-		AbsolutePackPath geometryPath = directory.resolve(program + ".gsh");
-		String geometrySource = sourceProvider.apply(geometryPath);
+        final AbsolutePackPath geometryPath = directory.resolve(program + ".gsh");
+        final String geometrySource = sourceProvider.apply(geometryPath);
 
-		AbsolutePackPath fragmentPath = directory.resolve(program + ".fsh");
-		String fragmentSource = sourceProvider.apply(fragmentPath);
+        final AbsolutePackPath fragmentPath = directory.resolve(program + ".fsh");
+        final String fragmentSource = sourceProvider.apply(fragmentPath);
 
 		return new ProgramSource(program, vertexSource, geometrySource, fragmentSource, programSet, properties,
 				defaultBlendModeOverride);
@@ -441,8 +402,8 @@ public class ProgramSet {
 	private static ComputeSource readComputeSource(AbsolutePackPath directory,
 												   Function<AbsolutePackPath, String> sourceProvider, String program,
 												   ProgramSet programSet) {
-		AbsolutePackPath computePath = directory.resolve(program + ".csh");
-		String computeSource = sourceProvider.apply(computePath);
+        final AbsolutePackPath computePath = directory.resolve(program + ".csh");
+        final String computeSource = sourceProvider.apply(computePath);
 
 		if (computeSource == null) {
 			return null;

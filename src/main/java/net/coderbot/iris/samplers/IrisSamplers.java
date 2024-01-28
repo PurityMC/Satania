@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 public class IrisSamplers {
 	public static final int ALBEDO_TEXTURE_UNIT = 0;
     // TODO: Find equivalent in 1.7.10
-	public static int OVERLAY_TEXTURE_UNIT = 1;
+	public static int OVERLAY_TEXTURE_UNIT = -1;
 	public static final int LIGHTMAP_TEXTURE_UNIT = 1;
 
 	public static final ImmutableSet<Integer> WORLD_RESERVED_TEXTURE_UNITS = ImmutableSet.of(0, 1, 2);
@@ -138,13 +138,13 @@ public class IrisSamplers {
 			samplers.addDynamicSampler(whitePixel::getGlTextureId, "lightmap");
 		}
 
-//		if (availability.overlay) {
-//            // TODO: Overlay equivalent in 1.7.10?
-////			samplers.addExternalSampler(OVERLAY_TEXTURE_UNIT, "iris_overlay");
+		if (availability.overlay) {
+            // TODO: Overlay equivalent in 1.7.10?
+			samplers.addExternalSampler(OVERLAY_TEXTURE_UNIT, "iris_overlay");
 //            samplers.addDynamicSampler(whitePixel::getGlTextureId, "iris_overlay");
-//		} else {
-//			samplers.addDynamicSampler(whitePixel::getGlTextureId, "iris_overlay");
-//		}
+		} else {
+			samplers.addDynamicSampler(whitePixel::getGlTextureId, "iris_overlay");
+		}
 
 		samplers.addDynamicSampler(pipeline::getCurrentNormalTexture, StateUpdateNotifiers.normalTextureChangeNotifier, "normals");
 		samplers.addDynamicSampler(pipeline::getCurrentSpecularTexture, StateUpdateNotifiers.specularTextureChangeNotifier, "specular");

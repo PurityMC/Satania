@@ -184,8 +184,8 @@ public class Iris {
             return;
         }
 
-        PBRTextureManager.INSTANCE.init();
         IrisSamplers.OVERLAY_TEXTURE_UNIT = GL11.glGenTextures();
+        PBRTextureManager.INSTANCE.init();
 
         // Only load the shader pack when we can access OpenGL
         loadShaderpack();
