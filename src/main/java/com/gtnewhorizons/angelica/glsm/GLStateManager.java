@@ -617,10 +617,10 @@ public class GLStateManager {
             } else if (textureUnit == IrisSamplers.LIGHTMAP_TEXTURE_UNIT) {
                 StateTracker.INSTANCE.lightmapSampler = true;
                 updatePipeline = true;
-            } else if (textureUnit == IrisSamplers.OVERLAY_TEXTURE_UNIT) {
+            } /*else if (textureUnit == IrisSamplers.OVERLAY_TEXTURE_UNIT) {
                 StateTracker.INSTANCE.overlaySampler = true;
                 updatePipeline = true;
-            }
+            }*/
 
             if (updatePipeline) {
                 Iris.getPipelineManager().getPipeline().ifPresent(p -> p.setInputs(StateTracker.INSTANCE.getInputs()));
@@ -640,10 +640,10 @@ public class GLStateManager {
             } else if (textureUnit == IrisSamplers.LIGHTMAP_TEXTURE_UNIT) {
                 StateTracker.INSTANCE.lightmapSampler = false;
                 updatePipeline = true;
-            } else if (textureUnit == IrisSamplers.OVERLAY_TEXTURE_UNIT) {
+            } /*else if (textureUnit == IrisSamplers.OVERLAY_TEXTURE_UNIT) {
                 StateTracker.INSTANCE.overlaySampler = false;
                 updatePipeline = true;
-            }
+            }*/
 
             if (updatePipeline) {
                 Iris.getPipelineManager().getPipeline().ifPresent(p -> p.setInputs(StateTracker.INSTANCE.getInputs()));

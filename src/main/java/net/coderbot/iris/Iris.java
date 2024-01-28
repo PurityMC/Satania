@@ -15,6 +15,7 @@ import net.coderbot.iris.pipeline.DeferredWorldRenderingPipeline;
 import net.coderbot.iris.pipeline.FixedFunctionWorldRenderingPipeline;
 import net.coderbot.iris.pipeline.PipelineManager;
 import net.coderbot.iris.pipeline.WorldRenderingPipeline;
+import net.coderbot.iris.samplers.IrisSamplers;
 import net.coderbot.iris.shaderpack.DimensionId;
 import net.coderbot.iris.shaderpack.OptionalBoolean;
 import net.coderbot.iris.shaderpack.ProgramSet;
@@ -34,6 +35,7 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ChatComponentText;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -183,6 +185,7 @@ public class Iris {
         }
 
         PBRTextureManager.INSTANCE.init();
+        IrisSamplers.OVERLAY_TEXTURE_UNIT = GL11.glGenTextures();
 
         // Only load the shader pack when we can access OpenGL
         loadShaderpack();
