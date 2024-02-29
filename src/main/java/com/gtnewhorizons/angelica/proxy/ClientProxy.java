@@ -11,6 +11,7 @@ import com.gtnewhorizons.angelica.models.VanillaModels;
 import com.gtnewhorizons.angelica.models.json.Loader;
 import com.gtnewhorizons.angelica.render.CloudRenderer;
 import com.gtnewhorizons.angelica.rendering.AngelicaBlockSafetyRegistry;
+import com.gtnewhorizons.angelica.utils.AssetLoader;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -67,8 +68,9 @@ public class ClientProxy extends CommonProxy {
         if (AngelicaConfig.enableTestBlocks)
             Loader.registerModels(BlockTest::loadModel, BlockTest.modelId);
 
-        if (AngelicaConfig.injectQPRendering)
-            VanillaModels.init();
+        if (AngelicaConfig.injectQPRendering) {
+            AssetLoader.load();
+        }
     }
 
 
@@ -117,7 +119,8 @@ public class ClientProxy extends CommonProxy {
         glsmKeyBinding  = new KeyBinding("Print GLSM Debug", Keyboard.KEY_NONE, "Angelica Keybinds");
         ClientRegistry.registerKeyBinding(glsmKeyBinding);
 
-        Loader.loadModels();
+        if (AngelicaConfig.injectQPRendering)
+            VanillaModels.init();
     }
 
     private boolean wasGLSMKeyPressed;
@@ -145,6 +148,9 @@ public class ClientProxy extends CommonProxy {
                 LOGGER.error("Could not replace LOTR handle render code with thread safe version");
             }
         }
+
+        Minecraft.getMinecraft().refreshResources();
+        Loader.loadModels();
     }
 
     float lastIntegratedTickTime;
