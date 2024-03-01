@@ -64,9 +64,7 @@ public class ClientProxy extends CommonProxy {
         FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
 
-        if (AngelicaConfig.injectQPRendering) {
-            AssetLoader.load();
-        }
+        AssetLoader.load();
     }
 
 
@@ -115,8 +113,7 @@ public class ClientProxy extends CommonProxy {
         glsmKeyBinding  = new KeyBinding("Print GLSM Debug", Keyboard.KEY_NONE, "Angelica Keybinds");
         ClientRegistry.registerKeyBinding(glsmKeyBinding);
 
-        if (AngelicaConfig.injectQPRendering)
-            VanillaModels.init();
+        VanillaModels.init();
     }
 
     private boolean wasGLSMKeyPressed;
