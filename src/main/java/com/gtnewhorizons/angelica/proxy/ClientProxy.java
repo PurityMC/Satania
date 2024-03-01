@@ -1,7 +1,6 @@
 package com.gtnewhorizons.angelica.proxy;
 
 import com.google.common.base.Objects;
-import com.gtnewhorizons.angelica.common.BlockTest;
 import com.gtnewhorizons.angelica.compat.ModStatus;
 import com.gtnewhorizons.angelica.config.AngelicaConfig;
 import com.gtnewhorizons.angelica.glsm.GLStateManager;
@@ -64,9 +63,6 @@ public class ClientProxy extends CommonProxy {
 
         FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
-
-        if (AngelicaConfig.enableTestBlocks)
-            Loader.registerModels(BlockTest::loadModel, BlockTest.modelId);
 
         if (AngelicaConfig.injectQPRendering) {
             AssetLoader.load();
