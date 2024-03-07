@@ -1,13 +1,13 @@
 package com.gtnewhorizons.angelica.proxy;
 
 import com.google.common.base.Objects;
+import com.gtnewhorizons.angelica.api.ModelLoader;
 import com.gtnewhorizons.angelica.compat.ModStatus;
 import com.gtnewhorizons.angelica.config.AngelicaConfig;
 import com.gtnewhorizons.angelica.glsm.GLStateManager;
 import com.gtnewhorizons.angelica.glsm.debug.OpenGLDebugging;
 import com.gtnewhorizons.angelica.hudcaching.HUDCaching;
 import com.gtnewhorizons.angelica.models.VanillaModels;
-import com.gtnewhorizons.angelica.api.Loader;
 import com.gtnewhorizons.angelica.render.CloudRenderer;
 import com.gtnewhorizons.angelica.rendering.AngelicaBlockSafetyRegistry;
 import com.gtnewhorizons.angelica.utils.AssetLoader;
@@ -143,7 +143,7 @@ public class ClientProxy extends CommonProxy {
         }
 
         Minecraft.getMinecraft().refreshResources();
-        Loader.loadModels();
+        ModelLoader.loadModels();
     }
 
     float lastIntegratedTickTime;
@@ -271,7 +271,7 @@ public class ClientProxy extends CommonProxy {
         }
 
         if (!baked) {
-            Loader.bakeModels();
+            ModelLoader.bakeModels();
             baked = true;
         }
     }
