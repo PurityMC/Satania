@@ -454,20 +454,14 @@ public enum Mixins {
         .addTargetedMod(TargetedMod.VANILLA)
         .addMixinClasses("mcpatcherforge.ctm_cc.MixinTextureMap")),
 
-    NOVIS_OCULIS(new Builder("Non-Tessellator Quad provider")
+    QPR(new Builder("Adds a QuadProvider field to blocks without populating it")
         .setSide(Side.CLIENT)
         .setPhase(Phase.EARLY)
-        .setApplyIf(() -> AngelicaConfig.injectQPRendering)
+        .setApplyIf(() -> true)
         .addTargetedMod(TargetedMod.VANILLA)
         .addMixinClasses(
-            "angelica.models.MixinBlockStone",
-            "angelica.models.MixinBlockGlass",
-            "angelica.models.MixinBlockAir",
-            "angelica.models.MixinBlockWorkbench",
-            "angelica.models.MixinBlockOldLeaf",
-            "angelica.models.MixinBlockNewLeaf",
-            "angelica.models.MixinBlockOldLog",
-            "angelica.models.MixinBlockNewLog")),
+            "angelica.models.MixinBlock",
+            "angelica.models.MixinBlockOldLeaf")),
 
     ;
 
