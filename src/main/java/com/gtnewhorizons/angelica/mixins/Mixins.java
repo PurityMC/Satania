@@ -461,6 +461,7 @@ public enum Mixins {
         .addTargetedMod(TargetedMod.VANILLA)
         .addMixinClasses(
             "angelica.models.MixinBlockStone",
+            "angelica.models.MixinBlockGlass",
             "angelica.models.MixinBlockAir",
             "angelica.models.MixinBlockWorkbench",
             "angelica.models.MixinBlockOldLeaf",
