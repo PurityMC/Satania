@@ -30,7 +30,7 @@ public class MixinCompatHackTweaker implements ITweaker {
         verifyDependencies();
 
         if(DISABLE_OPTIFINE_FASTCRAFT_BETTERFPS) {
-            LOGGER.info("Disabling Optifine, BetterFPS, and other incompatible mods (if present)");
+            LOGGER.info("Disabling BetterFPS, and other incompatible mods (if present)");
             disableIncompatibleMods();
         }
 
@@ -74,7 +74,7 @@ public class MixinCompatHackTweaker implements ITweaker {
             final List<IClassTransformer> xformers = (List<IClassTransformer>) xformersField.get(lcl);
             for (int idx = xformers.size() - 1; idx >= 0; idx--) {
                 final String name = xformers.get(idx).getClass().getName();
-                if (name.startsWith("optifine") || name.startsWith("me.guichaguri.betterfps")) {
+                if (name.startsWith("me.guichaguri.betterfps")) {
                     LOGGER.info("Removing transformer " + name);
                     xformers.remove(idx);
                 }
@@ -83,17 +83,6 @@ public class MixinCompatHackTweaker implements ITweaker {
             throw new RuntimeException(e);
         }
         try {
-            final Field injectedContainersField = Loader.class.getDeclaredField("injectedContainers");
-            injectedContainersField.setAccessible(true);
-            final List<String> containers = (List<String> ) injectedContainersField.get(Loader.class);
-            for (int idx = containers.size() - 1; idx >= 0; idx--) {
-            final String name = containers.get(idx);
-                if (name.startsWith("optifine")) {
-                    LOGGER.info("Removing mod container " + name);
-                    containers.remove(idx);
-                }
-            }
-
             final Field reparsedCoremodsField = CoreModManager.class.getDeclaredField("reparsedCoremods");
             final Field loadedCoremodsField = CoreModManager.class.getDeclaredField("loadedCoremods");
             reparsedCoremodsField.setAccessible(true);
