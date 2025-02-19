@@ -12,8 +12,8 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(
-        modid = "angelica",
-        name = "Angelica",
+        modid = "satania",
+        name = "Satania",
         version = Tags.VERSION,
         dependencies = " before:lwjgl3ify@[1.5.3,);" + " after:hodgepodge@[2.4.4,);" + " after:CodeChickenCore@[1.2.0,);"
                      + " after:archaicfix@[0.7.0,);" + " required-after:gtnhlib@[0.6.6,);",

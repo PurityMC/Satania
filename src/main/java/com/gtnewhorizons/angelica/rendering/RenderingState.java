@@ -1,6 +1,5 @@
 package com.gtnewhorizons.angelica.rendering;
 
-import com.gtnewhorizons.angelica.glsm.GLStateManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;

@@ -12,8 +12,9 @@ import javax.imageio.ImageIO;
 
 import com.gtnewhorizon.gtnhlib.bytebuf.MemoryStack;
 import com.gtnewhorizon.gtnhlib.bytebuf.MemoryUtilities;
+import com.gtnewhorizons.angelica.AngelicaMod;
+import com.gtnewhorizons.angelica.loading.AngelicaTweaker;
 import lombok.Getter;
-import net.coderbot.iris.Iris;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -80,7 +81,7 @@ public class NativeImage extends BufferedImage {
         try {
             ImageIO.write(this, "png", file);
         } catch(IOException ioexception) {
-            Iris.logger.info("[TextureDump] Unable to write: ", ioexception);
+            //Iris.logger.info("[TextureDump] Unable to write: ", ioexception);
         }
     }
     public static int combine(int i, int j, int k, int l) {

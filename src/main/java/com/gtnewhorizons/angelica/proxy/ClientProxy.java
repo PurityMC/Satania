@@ -3,43 +3,25 @@ package com.gtnewhorizons.angelica.proxy;
 import static com.gtnewhorizons.angelica.loading.AngelicaTweaker.LOGGER;
 
 import com.google.common.base.Objects;
-import com.gtnewhorizon.gtnhlib.client.renderer.vertex.DefaultVertexFormat;
-import com.gtnewhorizon.gtnhlib.client.renderer.vertex.VertexFormat;
-import com.gtnewhorizons.angelica.compat.ModStatus;
-import com.gtnewhorizons.angelica.compat.bettercrashes.BetterCrashesCompat;
 import com.gtnewhorizons.angelica.config.AngelicaConfig;
-import com.gtnewhorizons.angelica.config.CompatConfig;
 import com.gtnewhorizons.angelica.debug.F3Direction;
 import com.gtnewhorizons.angelica.debug.FrametimeGraph;
 import com.gtnewhorizons.angelica.debug.TPSGraph;
 import com.gtnewhorizons.angelica.mixins.interfaces.IGameSettingsExt;
-import com.gtnewhorizons.angelica.dynamiclights.DynamicLights;
-import com.gtnewhorizons.angelica.glsm.GLStateManager;
-import com.gtnewhorizons.angelica.glsm.debug.OpenGLDebugging;
 import com.gtnewhorizons.angelica.hudcaching.HUDCaching;
 import com.gtnewhorizons.angelica.models.VanillaModels;
-import com.gtnewhorizons.angelica.render.CloudRenderer;
-import com.gtnewhorizons.angelica.rendering.AngelicaBlockSafetyRegistry;
 import com.gtnewhorizons.angelica.utils.AssetLoader;
-import com.gtnewhorizons.angelica.zoom.Zoom;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.registry.GameData;
-import cpw.mods.fml.relauncher.ReflectionHelper;
+
 import java.lang.management.ManagementFactory;
 import java.util.Locale;
-import java.util.concurrent.ConcurrentHashMap;
-import jss.notfine.core.Settings;
-import me.jellysquid.mods.sodium.client.SodiumDebugScreenHandler;
-import net.coderbot.iris.Iris;
-import net.coderbot.iris.client.IrisDebugScreenHandler;
-import net.coderbot.iris.vertices.IrisVertexFormats;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -47,7 +29,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.Direction;
@@ -56,11 +37,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
 import org.lwjgl.input.Keyboard;
 
 public class ClientProxy extends CommonProxy {
@@ -79,22 +58,6 @@ public class ClientProxy extends CommonProxy {
         AssetLoader.load();
     }
 
-    @SubscribeEvent
-    public void worldLoad(WorldEvent.Load event) {
-        if (GLStateManager.isRunningSplash()) {
-            GLStateManager.setRunningSplash(false);
-            LOGGER.info("World loaded - Enabling GLSM Cache");
-        }
-
-        if (AngelicaConfig.enableSodium) {
-            // Register all blocks. Because blockids are unique to a world, this must be done each load
-            GameData.getBlockRegistry().typeSafeIterable().forEach(o -> {
-                AngelicaBlockSafetyRegistry.canBlockRenderOffThread(o, true, true);
-                AngelicaBlockSafetyRegistry.canBlockRenderOffThread(o, false, true);
-            });
-        }
-    }
-
     private static KeyBinding glsmKeyBinding;
 
     @Override
@@ -105,33 +68,6 @@ public class ClientProxy extends CommonProxy {
             FMLCommonHandler.instance().bus().register(HUDCaching.INSTANCE);
             MinecraftForge.EVENT_BUS.register(HUDCaching.INSTANCE);
         }
-        if (AngelicaConfig.enableSodium) {
-            MinecraftForge.EVENT_BUS.register(SodiumDebugScreenHandler.INSTANCE);
-        }
-        if (AngelicaConfig.enableIris) {
-            MinecraftForge.EVENT_BUS.register(IrisDebugScreenHandler.INSTANCE);
-
-            Iris.INSTANCE.fmlInitEvent();
-            FMLCommonHandler.instance().bus().register(Iris.INSTANCE);
-            MinecraftForge.EVENT_BUS.register(Iris.INSTANCE);
-
-            VertexFormat.registerSetupBufferStateOverride((vertexFormat, l) -> {
-                if (vertexFormat == DefaultVertexFormat.POSITION_COLOR_TEXTURE_LIGHT_NORMAL
-                    || vertexFormat == DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP) {
-                    IrisVertexFormats.TERRAIN.setupBufferState(l);
-                    return true;
-                }
-                return false;
-            });
-            VertexFormat.registerClearBufferStateOverride(vertexFormat -> {
-                if (vertexFormat == DefaultVertexFormat.POSITION_COLOR_TEXTURE_LIGHT_NORMAL
-                    || vertexFormat == DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP) {
-                    IrisVertexFormats.TERRAIN.clearBufferState();
-                    return true;
-                }
-                return false;
-            });
-        }
 
         FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
@@ -140,40 +76,6 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.registerKeyBinding(glsmKeyBinding);
 
         VanillaModels.init();
-
-        if (ModStatus.isBetterCrashesLoaded) {
-            BetterCrashesCompat.init();
-        }
-        if (AngelicaConfig.enableZoom) {
-            Zoom.init();
-        }
-    }
-
-    private boolean wasGLSMKeyPressed;
-
-    @SubscribeEvent
-    public void onKeypress(TickEvent.ClientTickEvent event) {
-        final boolean isPressed = glsmKeyBinding.getKeyCode() != 0 && GameSettings.isKeyDown(glsmKeyBinding);
-        if (isPressed && !wasGLSMKeyPressed) {
-            OpenGLDebugging.checkGLSM();
-        }
-        wasGLSMKeyPressed = isPressed;
-    }
-
-    @Override
-    public void postInit(FMLPostInitializationEvent event) {
-        super.postInit(event);
-
-        if (ModStatus.isLotrLoaded && AngelicaConfig.enableSodium && CompatConfig.fixLotr) {
-            try {
-                Class<?> lotrRendering = Class.forName("lotr.common.coremod.LOTRReplacedMethods$BlockRendering");
-                ReflectionHelper.setPrivateValue(lotrRendering, null, new ConcurrentHashMap<>(), "naturalBlockClassTable");
-                ReflectionHelper.setPrivateValue(lotrRendering, null, new ConcurrentHashMap<>(), "naturalBlockTable");
-                ReflectionHelper.setPrivateValue(lotrRendering, null, new ConcurrentHashMap<>(), "cachedNaturalBlocks");
-            } catch (ClassNotFoundException e) {
-                LOGGER.error("Could not replace LOTR handle render code with thread safe version");
-            }
-        }
     }
 
     float lastIntegratedTickTime;
@@ -219,14 +121,6 @@ public class ClientProxy extends CommonProxy {
             int meta = mc.theWorld.getBlockMetadata(mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ);
             event.right.add(Block.blockRegistry.getNameForObject(block));
             event.right.add("meta: " + meta);
-        }
-
-        if (DynamicLights.isEnabled()) {
-            var builder = new StringBuilder("Dynamic Light Sources: ");
-            DynamicLights dl = DynamicLights.get();
-            builder.append(dl.getLightSourcesCount()).append(" (U: ").append(dl.getLastUpdateCount()).append(')');
-
-            event.right.add(builder.toString());
         }
 
         if (AngelicaConfig.modernizeF3Screen) {
@@ -320,21 +214,6 @@ public class ClientProxy extends CommonProxy {
         if (Float.isNaN(event.red)) event.red = 0f;
         if (Float.isNaN(event.green)) event.green = 0f;
         if (Float.isNaN(event.blue)) event.blue = 0f;
-    }
-
-    @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END && mc.theWorld != null) {
-            CloudRenderer.getCloudRenderer().checkSettings();
-        }
-    }
-
-    // This is a bit of a hack to prevent the FOV from being modified by other mods
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onFOVModifierUpdate(FOVUpdateEvent event) {
-        if (!(boolean) Settings.DYNAMIC_FOV.option.getStore()) {
-            event.newfov = 1.0F;
-        }
     }
 
     @Override

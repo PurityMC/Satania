@@ -14,15 +14,4 @@ public class AngelicaRfbPlugin implements RfbPlugin {
     public void onConstruction(@NotNull PluginContext ctx) {
         Launch.blackboard.put("angelica.rfbPluginLoaded", Boolean.TRUE);
     }
-
-    @Override
-    public @NotNull RfbClassTransformer @Nullable [] makeTransformers() {
-        final boolean isServer = (null == RetroFuturaBootstrap.API.launchClassLoader().findClassMetadata("net.minecraft.client.main.Main"));
-        if (isServer) {
-            return null;
-        }
-        return new RfbClassTransformer[] {
-            new RedirectorTransformerWrapper()
-        };
-    }
 }

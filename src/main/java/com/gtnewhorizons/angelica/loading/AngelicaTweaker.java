@@ -13,9 +13,6 @@ import com.gtnewhorizons.angelica.transform.compat.GenericCompatTransformer;
 import com.gtnewhorizons.angelica.transform.compat.handlers.CompatHandler;
 import com.gtnewhorizons.angelica.transform.compat.handlers.CompatHandlers;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
-import jss.notfine.asm.AsmTransformers;
-import jss.notfine.asm.mappings.Namer;
-import jss.notfine.config.MCPatcherForgeConfig;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,7 +54,6 @@ public class AngelicaTweaker implements IFMLLoadingPlugin, IEarlyMixinLoader {
             // Angelica Config
             ConfigurationManager.registerConfig(AngelicaConfig.class);
             ConfigurationManager.registerConfig(CompatConfig.class);
-            MCPatcherForgeConfig.registerConfig();
             final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
             final Configuration config = ctx.getConfiguration();
             final LoggerConfig loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
@@ -94,11 +90,6 @@ public class AngelicaTweaker implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
             GenericCompatTransformer.build();
             transformers.add(GenericCompatTransformer.class.getName());
-
-            // Add NotFine transformers
-            final List<String> notFineTransformers = AsmTransformers.getTransformers();
-            if (!notFineTransformers.isEmpty()) Namer.initNames();
-            transformers.addAll(notFineTransformers);
 
             transformerClasses = transformers.toArray(new String[0]);
         }
@@ -155,7 +146,6 @@ public class AngelicaTweaker implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     private static final ImmutableMap<String, TargetedMod> MODS_BY_CLASS = ImmutableMap.<String, TargetedMod>builder()
         .put("optifine.OptiFineForgeTweaker", TargetedMod.OPTIFINE)
-        .put("fastcraft.Tweaker", TargetedMod.FASTCRAFT)
         .put("cofh.asm.LoadingPlugin", TargetedMod.COFHCORE)
         .build();
     public static final Set<TargetedMod> coreMods = new HashSet<>();
